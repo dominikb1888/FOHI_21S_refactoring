@@ -2,7 +2,22 @@ import csv
 
 
 class FundingRaised:
-    def _import_csv(filepath="../startup_funding.csv"):
+
+
+columns_dict = {
+    0: "permalink",
+    1: "company_name",
+    2: "number_employees",
+    3: "category",
+    4: "city",
+    5: "state",
+    6: "funded_date",
+    7: "raised_amount",
+    8: "raised_currency",
+    9: "round",
+}
+
+   def _import_csv(filepath="../startup_funding.csv"):
         with open(filepath, "rt") as csvfile:
             data = csv.reader(csvfile, delimiter=",", quotechar='"')
             # skip header
@@ -19,8 +34,7 @@ class FundingRaised:
         csv_data = FundingRaised._import_csv()
 
         # Checking
-        columns_dict = {1: "company_name", 4: "city", 5: "state", 9: "round"}
-        for key, column in columns_dict.items():
+        for key, column in FundingRaised.columns_dict.items():
             if column in options:
                 result = []
                 for row in csv_data:
@@ -52,8 +66,7 @@ class FundingRaised:
         csv_data = FundingRaised._import_csv()
 
         # Checking
-        columns_dict = {1: "company_name", 4: "city", 5: "state", 9: "round"}
-        for key, column in columns_dict.items():
+        for key, column in FundingRaised.columns_dict.items():
             if column in options:
                 for row in csv_data:
                     if row[key] == options[column]:
