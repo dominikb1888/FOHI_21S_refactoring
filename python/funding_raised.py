@@ -3,21 +3,20 @@ import csv
 
 class FundingRaised:
 
+    columns_dict = {
+        0: "permalink",
+        1: "company_name",
+        2: "number_employees",
+        3: "category",
+        4: "city",
+        5: "state",
+        6: "funded_date",
+        7: "raised_amount",
+        8: "raised_currency",
+        9: "round",
+    }
 
-columns_dict = {
-    0: "permalink",
-    1: "company_name",
-    2: "number_employees",
-    3: "category",
-    4: "city",
-    5: "state",
-    6: "funded_date",
-    7: "raised_amount",
-    8: "raised_currency",
-    9: "round",
-}
-
-   def _import_csv(filepath="../startup_funding.csv"):
+    def _import_csv(filepath="../startup_funding.csv"):
         with open(filepath, "rt") as csvfile:
             data = csv.reader(csvfile, delimiter=",", quotechar='"')
             # skip header
@@ -26,7 +25,7 @@ columns_dict = {
             for row in data:
                 csv_data.append(row)
 
-    return csv_data
+        return csv_data
 
     @staticmethod
     def where(options={}):
