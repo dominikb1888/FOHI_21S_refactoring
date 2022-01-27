@@ -1,12 +1,14 @@
 from funding_raised import FundingRaised
 
+FundingRaisedObj = FundingRaised()
+
 
 def test_where_returns_events():
-    assert len(FundingRaised.where({"company_name": "Facebook"})) == 7
+    assert len(FundingRaisedObj.where({"company_name": "Facebook"})) == 7
 
 
 def test_where_returns_correct_keys():
-    row = FundingRaised.where({"company_name": "Facebook"})[0]
+    row = FundingRaisedObj.where({"company_name": "Facebook"})[0]
     keys = [
         "permalink",
         "company_name",
@@ -36,28 +38,28 @@ def test_where_returns_correct_keys():
 
 
 def test_where_returns_events_by_city():
-    assert len(FundingRaised.where({"city": "Tempe"})) == 3
+    assert len(FundingRaisedObj.where({"city": "Tempe"})) == 3
 
 
 def test_where_returns_events_by_state():
-    assert len(FundingRaised.where({"state": "CA"})) == 873
+    assert len(FundingRaisedObj.where({"state": "CA"})) == 873
 
 
 def test_where_returns_events_by_company():
-    assert len(FundingRaised.where(
+    assert len(FundingRaisedObj.where(
         {"company_name": "Facebook", "round": "a"})) == 1
 
 
 def test_where_returns_events_by_type():
-    assert len(FundingRaised.where({"round": "a"})) == 582
+    assert len(FundingRaisedObj.where({"round": "a"})) == 582
 
 
 def test_where_returns_no_events():
-    assert len(FundingRaised.where({"company_name": "NotFacebook"})) == 0
+    assert len(FundingRaisedObj.where({"company_name": "NotFacebook"})) == 0
 
 
 def test_find_by_event_by_company_name():
-    row = FundingRaised.find_by({"company_name": "Facebook"})
+    row = FundingRaisedObj.find_by({"company_name": "Facebook"})
     keys = [
         "permalink",
         "company_name",
@@ -87,7 +89,7 @@ def test_find_by_event_by_company_name():
 
 
 def test_find_by_event_by_state():
-    row = FundingRaised.find_by({"state": "CA"})
+    row = FundingRaisedObj.find_by({"state": "CA"})
     keys = [
         "permalink",
         "company_name",

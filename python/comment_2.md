@@ -84,5 +84,74 @@ Ui, ui. So basically our brief search implementation needs to keep a strict regi
 
 I wonder what happens, if we remove the check for only these 4 columns and allow for all. If our test cases, which are describing the business logic do not test for any edge case here, we could just throw this line out. So, let's do this!
 
+{{gist 511582066f7e2b0c7f7ef0362f633222}}
+
+The code passes all tests without any issues. This means either the code was implementing something the client never wanted or the product manager didn't specify a proper test suite. For us this does not matter for the moment. Our concern is making all tests pass.
+
+Let's reflect on this code though. It looks a lot cleaner now, but a lot more as also become useless. Our Checking block is still necessary. However, the mapping block after needs to be questioned. If there is no need to check the options for certain column headers, which reason does the separation of headers and code have. Why would we need to map that code into a list of dicts in our final step in the function? Not at all, correct. We could start using a list of dicts right from the start and filter each line.
+
+## Functions from Heaven - csv.DictReader()
+
+Thanks to everyone involved in the python standard library. The CSV Module contains a way to not only read a CSV into a list lists, but to transpose this into a list of dicts with column headers as keys, and data values as dict values. Just like this:
+
+´´´{Python}
+
+[
+    { 
+         'header1': 'value',
+         'header2': 'value',
+    },
+    {
+         'header1': 'value',
+         'header2': 'value',
+    },
+    
+   # <...>
+]
+
+´´´
+
+Let's see which changes we need to apply to the code when using this approach. We receive a correctly transposed CSV Table as a list of dicts right after import. So, we can directly filter on each line of this list.
+
+First our new _import_csv() function:
+
+´´´{Python}
+
+def _import_csv(filepath="../startup_funding.csv"):
+    with open(filepath, "rt") as csvfile:
+        return [row for row in csv.DictReader(csvfile, delimiter=",", quotechar='"')]
+´´´
+
+We added a little list comprehension to transform the Reader object containing a dict to a list of dicts. Just as we needed it. If we test this in our notebook, the output is fine. However, suddenly our tests do not pass anymore. Now this becomes interesting!
+
+Our for loop from before need to be able to filter through multiple columns - as many as the user passed to our function - and add the results to the result list. If we implement this in analogy to the previous expressive function, we discover that both where and find_by assume the presence of both options for a successful match (AND). We can translate this to make sure the options dictionary is a subset of the row while iterating through each row. How might we do this?
+
+´´´´{Python}
+
+[row for row in self.data if row | options == row]
+
+´´´
+
+As simple as the above one-liner! We can iterate through each row of our dataset and check if our options dict is an exact subset, i.e. all key-value-pairs in options match the corresponding key-value-pairs in our csv_data-row. This is the check we need for this:
+
+´´´´{Python}
+# Comparing two dicts using bitwise-or (aka Pipe)
+(row | options) == row
+
+# Alternative using Tuples
+options.items() <= row.items()
+
+´´´
+
+[ ] The "|" operator can be used on Dicts since Python 3.9: https://www.python.org/dev/peps/pep-0584/. It allows creating the union of two dicts on both keys and values. If the options dict contains values also contained in the row dict, then both will be identical. If the options dict contains values that are not in the row dict, the row dicts values will be overwritten temporarily for the sake of comparing it to the original row dict. Obviously those do not match and hence the check fails.
+
+
+Other potential logical Operators would be 
+
+´´´´{Python}
+intersection = dict(dict1.items() & dict2.items())
+union = dict(dict1.items() | dict2.items())
+difference = dict(dict1.items() ^ dict2.items())
+´´´
 
 
