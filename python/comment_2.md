@@ -154,4 +154,11 @@ union = dict(dict1.items() | dict2.items())
 difference = dict(dict1.items() ^ dict2.items())
 ´´´
 
+After some cleanup our code looks like this:
 
+{{gist f6912fd5617cd38be9843d1b35c6bd50 }}
+
+We moved the comprehension statement from our two functions into one staticmethod _filter which get's the data, filters it and returns a generator. We can render this generator as a list (where() function) or return the first item from it (next() in find_by() function).
+
+Pretty clean now? 
+In the next post we are extending the use case and will add some more Quality. Let's focus some more on patterns to secure professional code and safety a lot more. 

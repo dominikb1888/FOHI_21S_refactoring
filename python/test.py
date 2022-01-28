@@ -1,6 +1,6 @@
-from funding_raised import FundingRaised
+from funding_raised import DealSearch
 
-FundingRaisedObj = FundingRaised()
+FundingRaisedObj = DealSearch()
 
 
 def test_where_returns_events():
